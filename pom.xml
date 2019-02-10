@@ -1,0 +1,112 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.sonarxsl</groupId>
+	<artifactId>xslt-quality-for-sonar</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<packaging>jar</packaging>
+
+	<name>XSLT Quality Schematron</name>
+	<description>Code quality for XSLT</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.mricaud.xml</groupId>
+			<artifactId>xslt-quality</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>	
+
+	<build>
+		<plugins>
+			
+			<plugin>
+				<groupId>top.marchand.xml.maven</groupId>
+				<artifactId>catalogBuilder-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>preparation</id>
+						<goals>
+							<goal>catalog</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<uriPatterns>
+						<uriPattern>standard</uriPattern>
+						<uriPattern>full</uriPattern>
+					</uriPatterns>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xml-maven-plugin</artifactId>
+				<version>1.0.2</version>
+				<dependencies>
+					<dependency>
+						<groupId>net.sf.saxon</groupId>
+						<artifactId>Saxon-HE</artifactId>
+						<version>9.9.1-1</version>
+					</dependency>
+					
+				</dependencies>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>transform</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<transformationSets>
+						<transformationSet>
+							<dir>src/main/sch</dir>
+							<includes>
+								<include>*.sch</include>
+							</includes>
+							<stylesheet>src/main/xsl/extract-documentation.xsl</stylesheet>
+							<!-- TODO FileMapper -->
+						</transformationSet>
+					</transformationSets>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.sonarxsl</groupId>
+				<artifactId>sonar-schematron-packagin-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<executions>
+					<execution>
+					<!-- TODO Phase décalée ? (default : compile )-->
+						<goals>
+							<goal>package-schematron-for-sonar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<schematronResourcesSets>
+						<schematronResourcesSet>
+							<dir>src/main/sch/</dir>
+							<includes>
+								<include>**/*.sch</include>
+							</includes>
+							<entryPoints>
+								<entryPoint>checkXSLTstyle.sch</entryPoint>
+							</entryPoints>
+						</schematronResourcesSet>
+					</schematronResourcesSets>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
