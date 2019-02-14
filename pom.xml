@@ -67,6 +67,9 @@
 					</execution>
 				</executions>
 				<configuration>
+					<catalogs>
+						<catalog>catalog.xml</catalog>
+					</catalogs>
 					<transformationSets>
 						<transformationSet>
 							<dir>src/main/sch</dir>
@@ -74,7 +77,8 @@
 								<include>*.sch</include>
 							</includes>
 							<stylesheet>src/main/xsl/extract-documentation.xsl</stylesheet>
-							<!-- TODO FileMapper -->
+							<outputDir>target/resolved-sch/</outputDir>
+							<!-- TODO FileMapper ? -->
 						</transformationSet>
 					</transformationSets>
 				</configuration>
@@ -95,7 +99,7 @@
 				<configuration>
 					<schematronResourcesSets>
 						<schematronResourcesSet>
-							<dir>src/main/sch/</dir>
+							<dir>target/resolved-sch/</dir>
 							<includes>
 								<include>**/*.sch</include>
 							</includes>

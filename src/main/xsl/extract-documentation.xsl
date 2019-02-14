@@ -12,25 +12,24 @@
     
     <xsl:output indent="yes"></xsl:output>
     
-    <xsl:template match="/">
-        <xsl:message terminate="yes">TODO : adapter au @from !</xsl:message>
-        <sonar:metadata>
-            <xsl:apply-templates></xsl:apply-templates>
-        </sonar:metadata>
+    <xsl:template match="node() | @*">
+        <xsl:copy>
+            <xsl:apply-templates select="node() | @*" />
+        </xsl:copy>
     </xsl:template>
     
-    <xsl:template match="node()">
-        <xsl:apply-templates select="node()"></xsl:apply-templates>
+    <xsl:template match="sonar:documentation">
+        <xsl:apply-templates select="document(@from)" mode="import_doc" />
     </xsl:template>
     
-    <xsl:template match="xd:doc">
+    <xsl:template match="xd:doc" mode="import_doc">
         <sonar:description>
             <xsl:attribute name="rel" select="(following-sibling::sch:assert|following-sibling::sch:report)/@id" />          
-            <xsl:apply-templates/>
+            <xsl:apply-templates mode="#current"/>
         </sonar:description>
     </xsl:template>
     
-    <xsl:template match="xd:desc[@xml:lang = $lang]">
+    <xsl:template match="xd:desc[@xml:lang = $lang]" mode="import_doc">
         <html:p>
             <xsl:value-of select="."/>
         </html:p>
